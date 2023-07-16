@@ -1,17 +1,7 @@
 fn main() {
-    let url = String::from("127.0.0.1:8080");
-    let url_slice = &url[10..];
-
-    let string_borrow = &url;
-    let string_literal = "1234";
-
-    dbg!(&url);
-    dbg!(url_slice);
-    dbg!(string_borrow);
-    dbg!(string_literal);
-
-    // let server = Server::new(url);
-    // server.run();
+    // let url = String::from("127.0.0.1:8080");
+    let server = Server::new("127.0.0.1:8080".to_string());
+    server.run();
 }
 
 struct Server {
@@ -23,5 +13,7 @@ impl Server {
         Self { addr }
     }
 
-    fn run(self) {}
+    fn run(self) {
+        println!("Listening on {}", self.addr);
+    }
 }
