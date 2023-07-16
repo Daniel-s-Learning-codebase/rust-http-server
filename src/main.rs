@@ -23,7 +23,7 @@ impl Server {
 
 struct Request {
     path: String,
-    query: String,
+    query_string: Option<String>,
     method: Method,
 }
 
