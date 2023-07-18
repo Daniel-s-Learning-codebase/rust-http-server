@@ -15,9 +15,28 @@ impl Server {
         let listener = TcpListener::bind(&self.addr).unwrap();
 
         loop {
-            listener.accept();
-        }
+            match listener.accept() {
+                Ok((stream, addr)) => {
+                    println!("OK");
+                }
+                Err(e) => {
+                    println!("Failed to handle an exception: {}", e);
+                }
+            }
 
-        let tup = (5, "a", listener);
+            match "abcd" {
+                "abcd" => {}
+                "a" => {}
+                _ => {}
+            }
+
+            let res = listener.accept();
+
+            if res.is_err() {
+                continue;
+            }
+
+            let (stream, addr) = res.unwrap();
+        }
     }
 }
