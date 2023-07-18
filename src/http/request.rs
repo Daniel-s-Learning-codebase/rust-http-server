@@ -15,7 +15,7 @@ impl TryFrom<&[u8]> for Request {
 
     fn try_from(buf: &[u8]) -> Result<Self, Self::Error> {
         let string = String::from("ads");
-        string.encrypt();
+        string.encrypt();   //  encrypting string
         buf.encrypt();
         unimplemented!()
     }
