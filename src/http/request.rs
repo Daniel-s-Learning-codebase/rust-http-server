@@ -1,5 +1,9 @@
 use super::method::Method;
 use std::convert::TryFrom;
+use std::error::Error;
+use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
+use std::str;
+use std::str::Utf8Error;
 pub struct Request {
     path: String,
     query_string: Option<String>,
@@ -11,28 +15,53 @@ impl Request {
 }
 
 impl TryFrom<&[u8]> for Request {
-    type Error = String;
+    type Error = ParseError;
 
     fn try_from(buf: &[u8]) -> Result<Self, Self::Error> {
-        let string = String::from("ads");
-        string.encrypt();
-        buf.encrypt();
+        match str::from_utf8(buf) {
+            Ok(request) => {}
+            Err(_) => return Err(ParseError::InvalidEncoding),
+        }
+
+        let request = str::from_utf8(buf)?;
         unimplemented!()
     }
 }
 
-trait Encrypt {
-    fn encrypt(&self) -> Self;
-}
-
-impl Encrypt for String {
-    fn encrypt(&self) -> Self {
-        unimplemented!()
+impl Display for ParseError {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        write!(f, "{}", self.message())
     }
 }
 
-impl Encrypt for &[u8] {
-    fn encrypt(&self) -> Self {
-        unimplemented!()
+impl Debug for ParseError {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        write!(f, "{}", self.message())
     }
 }
+
+impl From<Utf8Error> for ParseError {
+    fn from(_: Utf8Error) -> Self {
+        Self::InvalidEncoding;
+    }
+}
+
+pub enum ParseError {
+    InvalidRequest,
+    InvalidEncoding,
+    InvalidProtocol,
+    InvalidMethod,
+}
+
+impl ParseError {
+    fn message(&self) -> &str {
+        match self {
+            Self::InvalidRequest => "Invalid Request",
+            Self::InvalidEncoding => "Invalid Encoding",
+            Self::InvalidProtocol => "Invalid Protocol",
+            Self::InvalidMethod => "Invalid Method",
+        }
+    }
+}
+
+impl Error for ParseError {}
